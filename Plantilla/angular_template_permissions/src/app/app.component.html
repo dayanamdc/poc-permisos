@@ -1,0 +1,38 @@
+@if (loading$ | async) {
+  <div class="router-loading">
+    <mat-spinner color="accent"></mat-spinner>
+  </div>
+}
+<router-outlet></router-outlet>
+
+<p-toast
+  key="messageDialog"
+  (onClose)="onClose()"
+  [baseZIndex]="5000"
+></p-toast>
+
+<p-toast
+  position="bottom-center"
+  key="messageVersion"
+  (onClose)="onClose()"
+  [baseZIndex]="5000"
+>
+  <ng-template let-message pTemplate="message">
+    <div class="p-grid p-ai-center vertical-container">
+      <div class="p-col">
+        <h4>{{ message.summary }}</h4>
+        <p>{{ message.detail }}</p>
+      </div>
+      <div class="p-col">
+        <button
+          mat-raised-button
+          class="flex-center"
+          color="accent"
+          (click)="refreshApp()"
+        >
+          <span class="hidden-sm">{{ "Refresh" | translate }}</span>
+        </button>
+      </div>
+    </div>
+  </ng-template>
+</p-toast>

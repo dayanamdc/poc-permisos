@@ -1,0 +1,62 @@
+<div class="main-container-full">
+  <div class="content">
+    <div class="login-card">
+      <div class="login-accent-bar"></div>
+
+      <div class="login-header">
+        <div class="brand-badge">
+          <span class="material-icons">verified_user</span>
+        </div>
+        <h1>Gestión de Permisos</h1>
+        <p class="subtitle">Portal de Revisión y Aprobación de Documentos</p>
+      </div>
+
+      <form (ngSubmit)="onSubmit()" class="login-form">
+        <div class="form-group">
+          <label for="usernameInput">Usuario</label>
+          <div class="input-wrapper">
+            <span class="material-icons input-icon">person</span>
+            <input
+              id="usernameInput"
+              name="username"
+              type="text"
+              [ngModel]="username()"
+              (ngModelChange)="username.set($event)"
+              placeholder="Ej. Carlos Mendoza (opcional)"
+              autocomplete="username"
+            />
+          </div>
+          <span class="helper-text">
+            Acceso POC sin contraseña. Puedes escribir un usuario o presionar Ingresar directamente.
+          </span>
+        </div>
+
+        <div class="demo-users">
+          <span class="demo-label">Usuarios de prueba:</span>
+          <div class="demo-chips">
+            @for (demo of demoUsers; track demo) {
+              <button
+                type="button"
+                class="demo-chip"
+                [class.selected]="username() === demo"
+                (click)="selectDemoUser(demo)"
+              >
+                {{ demo }}
+              </button>
+            }
+          </div>
+        </div>
+
+        <button type="submit" class="Primary-Button login-submit">
+          <span>Ingresar</span>
+          <span class="material-icons">arrow_forward</span>
+        </button>
+      </form>
+
+      <div class="login-footer">
+        <span class="material-icons footer-icon">info</span>
+        <span>Entorno POC · Sin autenticación SSO activa</span>
+      </div>
+    </div>
+  </div>
+</div>

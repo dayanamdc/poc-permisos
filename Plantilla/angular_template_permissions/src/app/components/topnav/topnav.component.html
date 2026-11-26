@@ -1,0 +1,38 @@
+<mat-toolbar [class.mat-elevation-z4]="true" color="white-two" class="fix-nav">
+  @if (!!userData && showMenuBars === true) {
+    <button type="button" mat-icon-button (click)="toggleSidebar()">
+      <mat-icon
+        color="accent"
+        class="menuIcon"
+        aria-label="Side nav toggle icon"
+        >view_headline</mat-icon
+      >
+    </button>
+  }
+
+  <div class="nav-brand">
+    @if (showTitle === true) {
+      <span class="head-title">{{ title }}</span>
+    }
+  </div>
+
+  <span class="nav-spacer"></span>
+
+  @if (!!userData && !isMobile) {
+    <div
+      matTooltip="{{ windowWidth() < 769 ? userData.name : '' }}"
+      matTooltipClass="sgs-black-tooltip"
+      class="flex-align-center"
+    >
+      <span class="sgs-header-username hidden-sm">{{ userData.name }}</span>
+      <mat-icon color="accent">account_circle</mat-icon>
+    </div>
+  }
+  @if (!!userData) {
+    <sgs-logout
+      color="primary"
+      [iconOnly]="true"
+      class="flex-center"
+    ></sgs-logout>
+  }
+</mat-toolbar>

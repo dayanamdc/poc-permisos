@@ -1,0 +1,16 @@
+<div>
+  @if (!!user) {
+    <button
+      mat-icon-button
+      (click)="logout()"
+      matTooltip="{{ 'Logout' | translate }}"
+      matTooltipClass="sgs-black-tooltip"
+      [color]="color"
+    >
+      <mat-icon [ngClass]="{ 'sidenav-icon': iconOnly }">exit_to_app</mat-icon>
+      @if (!iconOnly) {
+        <span>{{ "Logout" | translate }}</span>
+      }
+    </button>
+  }
+</div>

@@ -1,0 +1,18 @@
+{
+  "close": "close",
+  "status dialog message...": "status dialog message...",
+  "welcome":"Welcome to the SGS Angular Starter Kit!",
+  "angular introduction": "Angular is a platform for building mobile and desktop web applications.",
+  "explanation": " In the SWA CoE we kwow that is the most-used framework in SGS when developing web applications. We also believe on it, despite that is going down in the usage against other approaches like VueJs or React, that potentially provide better development productivity and more performant PWAs. Some of our products have been developed using Angular, like",
+  "and": "and",
+  "conclusion": ", so aiming for using it in the future, we have cooked this template to eat our own food, but also to share it with the SGS Software Develoment community.",
+  "dependencies": "It comes with all the necessary dependencies and libraries in order to help you to speed-up your developments using Angular. For details please",
+  "repo": "go to the repo",
+  "readme": "and take a look to the README.md file.",
+  "summary": "As a summary, it's based on",
+  "maindendencies": ", as their main dependencies, and comes with built-in support for using",
+  "help": "If you need help in order to start using it, do not hesitate to",
+  "helpyou": "and we'll help you to start using it.",
+  "navigation": "Browse the left menu to get a look of the UI look and feel, and the usage and design of some common Apps UI components, that are respecting the SGS Identity Guidelines.",
+  "example": "There are some examples of"
+}

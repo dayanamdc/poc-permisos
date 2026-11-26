@@ -1,0 +1,198 @@
+<div id="sidebar" [ngClass]="{ 'side-collapsed': collapsed === true }">
+  <div class="layout-column layout-fill">
+    <mat-nav-list class="layout-column flex-grow">
+      <mat-list-item [routerLinkActive]="'active'" [routerLink]="['/home']">
+        <button
+          type="button"
+          mat-icon-button
+          matTooltip="{{ collapsed ? ('Home' | translate) : '' }}"
+          matTooltipClass="sgs-black-tooltip"
+        >
+          <mat-icon class="sidenav-icon">home</mat-icon>
+          <span>{{ !collapsed ? ("Home" | translate) : "" }}</span>
+        </button>
+      </mat-list-item>
+
+      <mat-list-item
+        [routerLinkActive]="'active'"
+        [routerLink]="['/components']"
+      >
+        <button
+          type="button"
+          mat-icon-button
+          matTooltip="{{ collapsed ? ('Components' | translate) : '' }}"
+          matTooltipClass="sgs-black-tooltip"
+        >
+          <mat-icon class="sidenav-icon">extension</mat-icon>
+          <span>{{ !collapsed ? ("Components" | translate) : "" }}</span>
+        </button>
+      </mat-list-item>
+
+      <mat-list-item [routerLinkActive]="'active'" [routerLink]="['/forms']">
+        <button
+          type="button"
+          mat-icon-button
+          matTooltip="{{ collapsed ? ('Forms' | translate) : '' }}"
+          matTooltipClass="sgs-black-tooltip"
+        >
+          <mat-icon class="sidenav-icon">toc</mat-icon>
+          <span>{{ !collapsed ? ("Forms" | translate) : "" }}</span>
+        </button>
+      </mat-list-item>
+
+      <mat-list-item [routerLinkActive]="'active'" [routerLink]="['/data']">
+        <button
+          type="button"
+          mat-icon-button
+          matTooltip="{{ collapsed ? ('Data' | translate) : '' }}"
+          matTooltipClass="sgs-black-tooltip"
+        >
+          <mat-icon class="sidenav-icon">analytics</mat-icon>
+          <span class="sidenav-text">{{
+            !collapsed ? ("Data" | translate) : ""
+          }}</span>
+        </button>
+      </mat-list-item>
+
+      <mat-list-item
+        [routerLinkActive]="'active'"
+        [routerLink]="['/user-profile']"
+      >
+        <button
+          type="button"
+          mat-icon-button
+          matTooltip="{{ collapsed ? ('User profile' | translate) : '' }}"
+          matTooltipClass="sgs-black-tooltip"
+        >
+          <mat-icon class="sidenav-icon">person</mat-icon>
+          <span>{{ !collapsed ? ("User profile" | translate) : "" }}</span>
+        </button>
+      </mat-list-item>
+
+      <mat-list-item
+        [routerLinkActive]="'active'"
+        [routerLink]="['/sample-add']"
+      >
+        <button
+          type="button"
+          mat-icon-button
+          matTooltip="{{ collapsed ? ('Sample Add' | translate) : '' }}"
+          matTooltipClass="sgs-black-tooltip"
+        >
+          <mat-icon class="sidenav-icon">create_new_folder</mat-icon>
+          <span>{{ !collapsed ? ("SampleAdd" | translate) : "" }}</span>
+        </button>
+      </mat-list-item>
+
+      <mat-list-item
+        [routerLinkActive]="'active'"
+        [routerLink]="['/sample-edit']"
+      >
+        <button
+          type="button"
+          mat-icon-button
+          matTooltip="{{ collapsed ? ('Sample Edit' | translate) : '' }}"
+          matTooltipClass="sgs-black-tooltip"
+        >
+          <mat-icon class="sidenav-icon">edit</mat-icon>
+          <span>{{ !collapsed ? ("SampleEdit" | translate) : "" }}</span>
+        </button>
+      </mat-list-item>
+
+      @if (!collapsed) {
+        <div class="p-pt-2" mat-subheader>OTHER APPS</div>
+      }
+
+      <mat-list-item [routerLinkActive]="'active'" [routerLink]="['/home2']">
+        <button
+          type="button"
+          mat-icon-button
+          matTooltip="{{ collapsed ? ('External link' | translate) : '' }}"
+          matTooltipClass="sgs-black-tooltip"
+        >
+          <mat-icon class="sidenav-icon">link</mat-icon>
+          <span>{{ !collapsed ? ("External link" | translate) : "" }}</span>
+        </button>
+      </mat-list-item>
+
+      <span class="flex-grow"></span>
+
+      <mat-divider></mat-divider>
+      <mat-list-item [routerLinkActive]="'active'" [routerLink]="['/feedback']">
+        <span
+          [ngStyle]="{ width: collapsed === true ? '40px;' : '190px;' }"
+          style="text-align: left"
+        >
+          <button
+            type="button"
+            mat-icon-button
+            matTooltip="{{ collapsed ? ('Feedback' | translate) : '' }}"
+            matTooltipClass="sgs-black-tooltip"
+          >
+            <mat-icon class="sidenav-icon">help</mat-icon>
+            <span>{{ !collapsed ? ("Help & Feedback" | translate) : "" }}</span>
+          </button>
+        </span>
+      </mat-list-item>
+
+      <mat-list-item [routerLinkActive]="'active'" [routerLink]="['/about']">
+        <span
+          [ngStyle]="{ width: collapsed === true ? '40px;' : '190px;' }"
+          style="text-align: left"
+        >
+          <button
+            type="button"
+            mat-icon-button
+            matTooltip="{{ collapsed ? ('About' | translate) : '' }}"
+            matTooltipClass="sgs-black-tooltip"
+          >
+            <mat-icon class="sidenav-icon">info</mat-icon>
+            <span>{{ !collapsed ? ("About" | translate) : "" }}</span>
+          </button>
+        </span>
+
+        <span class="nav-spacer"></span>
+        @if (!collapsed) {
+          <button
+            type="button"
+            mat-icon-button
+            matTooltip="{{ 'Collapse' | translate }}"
+            matTooltipClass="sgs-black-tooltip"
+            (click)="toggleCollapse(); $event.stopPropagation()"
+          >
+            <mat-icon class="sidenav-icon icon-flipped">double_arrow</mat-icon>
+          </button>
+        }
+      </mat-list-item>
+
+      @if (collapsed) {
+        <mat-list-item (click)="toggleCollapse()">
+          <button
+            type="button"
+            mat-icon-button
+            matTooltip="{{ 'Expand' | translate }}"
+            matTooltipClass="sgs-black-tooltip"
+          >
+            <mat-icon class="sidenav-icon" style="margin: 0 0 0 -5px"
+              >double_arrow</mat-icon
+            >
+          </button>
+        </mat-list-item>
+      }
+      <mat-list-item>
+        <a href="https://www.sgs.com" target="_blank">
+          <img src="../../../assets/images/logo-sgs.png" class="img-logo" />
+        </a>
+        <a
+          href="https://sgs.sharepoint.com/sites/global-it-coe"
+          target="_blank"
+        >
+          <img
+            src="https://swacoestoragelab.blob.core.windows.net/logos/coe/ArchTech%20logos/TA%20logo%20trans.png"
+            class="img-logo-coe"
+          />
+        </a>
+      </mat-list-item>
+    </mat-nav-list>
+  </div>
+</div>

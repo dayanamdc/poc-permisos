@@ -1,0 +1,18 @@
+{
+    "close": "Cerca",
+    "status dialog message...": "mensaje de diálogo de estado...",
+    "welcome": "¡ Bienvenido al kit de inicio angular de SGS!",
+    "angular introduction": "Angular es una plataforma para la creación de aplicaciones web móviles y de escritorio.",
+    "explanation": " En el CoE SWA, nos sabemos que es el marco más utilizado en SGS a la hora de desarrollar aplicaciones Web. También creemos en ello, a pesar de que está descenyendo en el uso contra otros enfoques como VueJs o reAct, que potencialmente proporcionan una mejor productividad en el desarrollo y un mayor rendimiento de PWAs. Algunos de nuestros productos se han desarrollado utilizando angular, como",
+    "and": "Y",
+    "conclusion": ", por lo que, al apuntar a usarla en el futuro, hemos cocinado esta plantilla para comer nuestra propia comida, pero también para compartirla con la comunidad de Develoment de software de SGS.",
+    "dependencies": "Viene con todas las dependencias y bibliotecas necesarias con el fin de ayudarle a acelerar sus desarrollos utilizando angular. Para obtener más información,",
+    "repo": "vaya al repositorio",
+    "readme": "y eche un vistazo al archivo README.md.",
+    "summary": "Como Resumen, se basa en",
+    "maindendencies": ", como sus dependencias principales, y viene con la compatibilidad integrada para usar",
+    "help": "Si necesita ayuda con el fin de empezar a usarla, no dude en hacerlo.",
+    "helpyou": "y le ayudaremos a empezar a usarla.",
+    "navigation": "Navegue por el menú de la izquierda para ver el aspecto de la interfaz de usuario, así como el uso y el diseño de algunos componentes comunes de la interfaz de usuario de aplicaciones, que respetan las directrices de identidad de SGS.",
+    "example": "A continuación encontrará un ejemplo de"
+  }

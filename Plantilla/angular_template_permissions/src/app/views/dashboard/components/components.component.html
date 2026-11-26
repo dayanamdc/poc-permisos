@@ -1,0 +1,37 @@
+<div class="layout-row-wrap">
+  <div class="col-xs-12 mb-6">
+    <p class="title">Components</p>
+  </div>
+</div>
+<mat-divider></mat-divider>
+<div class="layout-row-wrap">
+  <div class="col-xs-12 mb-6">
+    <p class="mt-2">
+      {{ "example" | translate }}
+      <a href="https://angular.io/guide/architecture-components" target="_blank"
+        >UI components</a
+      >
+      in the code of the template, like the header, the left side menu, a bread
+      crumb component, that serve as an example on how to design and use them in
+      order to develop your own components.
+    </p>
+    <p>
+      <p-button
+        label="HERE"
+        (click)="showrightSidebar()"
+        class="p-button-custom"
+      ></p-button>
+      <app-rightsidebar></app-rightsidebar> you can see in action more UI
+      components, a right side bar and a toast message.
+    </p>
+    <p>
+      <p-button
+        label="HERE"
+        routerLink="child-about"
+        class="p-button-custom"
+      ></p-button>
+      you can load a nested component inside this one
+      <router-outlet></router-outlet>
+    </p>
+  </div>
+</div>
