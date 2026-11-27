@@ -15,7 +15,7 @@ import {
   ActaVersionSnapshot,
 } from '../../../models/document.model';
 
-type DetailTab = 'PDF' | 'FIRMAS';
+type DetailTab = 'PLANTILLA' | 'PDF' | 'EVIDENCIAS' | 'FIRMAS';
 
 @Component({
   selector: 'app-bandeja',
@@ -32,7 +32,7 @@ export class BandejaComponent {
 
   searchTerm = signal('');
   selectedVersionNumber = signal<number | null>(null);
-  activeDetailTab = signal<DetailTab>('PDF');
+  activeDetailTab = signal<DetailTab>('PLANTILLA');
 
   observationInput = signal('');
   observationError = signal('');
@@ -129,7 +129,7 @@ export class BandejaComponent {
   openActaDetail(acta: ActaRecord): void {
     this.documentsService.selectedActaId.set(acta.id);
     this.selectedVersionNumber.set(acta.currentVersion);
-    this.activeDetailTab.set('PDF');
+    this.activeDetailTab.set('PLANTILLA');
     this.observationInput.set('');
     this.observationError.set('');
   }

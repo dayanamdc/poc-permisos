@@ -234,6 +234,14 @@
             <button
               type="button"
               class="tab-pill"
+              [class.active]="activeDetailTab() === 'PLANTILLA'"
+              (click)="activeDetailTab.set('PLANTILLA')"
+            >
+              Datos de plantilla
+            </button>
+            <button
+              type="button"
+              class="tab-pill"
               [class.active]="activeDetailTab() === 'PDF'"
               (click)="activeDetailTab.set('PDF')"
             >
@@ -242,10 +250,18 @@
             <button
               type="button"
               class="tab-pill"
+              [class.active]="activeDetailTab() === 'EVIDENCIAS'"
+              (click)="activeDetailTab.set('EVIDENCIAS')"
+            >
+              Evidencias ({{ snap.evidences.length }})
+            </button>
+            <button
+              type="button"
+              class="tab-pill"
               [class.active]="activeDetailTab() === 'FIRMAS'"
               (click)="activeDetailTab.set('FIRMAS')"
             >
-              Firmas y decisión ({{ getSignedCount(acta) }}/3)
+              Firmas y decisión
             </button>
           </div>
 
@@ -283,7 +299,67 @@
             </div>
           }
 
-          @if (activeDetailTab() === 'PDF') {
+          @if (activeDetailTab() === 'PLANTILLA') {
+            <div class="detail-surface-card">
+              <div class="plantilla-two-col">
+                <div class="plantilla-box">
+                  <h3 class="plantilla-box-title">1. Encabezado</h3>
+                  <div class="plantilla-kv-grid">
+                    <div class="kv-item">
+                      <span class="kv-label">Número de acta</span>
+                      <span class="kv-val">{{ acta.code }}</span>
+                    </div>
+                    <div class="kv-item">
+                      <span class="kv-label">Tipo de acta</span>
+                      <span class="kv-val">{{ snap.data.actaType }}</span>
+                    </div>
+                    <div class="kv-item">
+                      <span class="kv-label">Versión presentada</span>
+                      <span class="kv-val">Versión {{ snap.version }}</span>
+                    </div>
+                    <div class="kv-item">
+                      <span class="kv-label">Sector operacional</span>
+                      <span class="kv-val">{{ snap.data.sector }}</span>
+                    </div>
+                    <div class="kv-item">
+                      <span class="kv-label">Conformidad en campo</span>
+                      <span class="kv-val">{{ snap.signatures.campo2.signedAt || 'Pendiente' }}</span>
+                    </div>
+                    <div class="kv-item">
+                      <span class="kv-label">Registrador / Inspector</span>
+                      <span class="kv-val">{{ snap.data.registrant }}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="plantilla-box">
+                  <h3 class="plantilla-box-title">2. Datos generales</h3>
+                  <div class="plantilla-kv-grid">
+                    <div class="kv-item full">
+                      <span class="kv-label">Título / Actividad</span>
+                      <span class="kv-val">{{ snap.data.title }}</span>
+                    </div>
+                    <div class="kv-item">
+                      <span class="kv-label">Cuadrilla / Equipo</span>
+                      <span class="kv-val">{{ snap.data.fieldTeam }}</span>
+                    </div>
+                    <div class="kv-item">
+                      <span class="kv-label">Ubicación / Sede</span>
+                      <span class="kv-val">{{ snap.data.location }}</span>
+                    </div>
+                    <div class="kv-item full">
+                      <span class="kv-label">Descripción de campo</span>
+                      <span class="kv-val">{{ snap.data.description }}</span>
+                    </div>
+                    <div class="kv-item full">
+                      <span class="kv-label">Notas registradas</span>
+                      <span class="kv-val">{{ snap.data.fieldNotes }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          } @else if (activeDetailTab() === 'PDF') {
             <div class="detail-surface-card">
               <div class="pdf-viewer-shell">
                 <div class="pdf-toolbar">
@@ -376,6 +452,27 @@
                   </div>
                 </div>
               </div>
+            </div>
+          } @else if (activeDetailTab() === 'EVIDENCIAS') {
+            <div class="detail-surface-card">
+              <h3 class="plantilla-box-title">Evidencias adjuntas de campo ({{ snap.evidences.length }})</h3>
+              @if (snap.evidences.length === 0) {
+                <p class="description-text">No hay evidencias adjuntas en esta versión.</p>
+              } @else {
+                <div class="attachments-list">
+                  @for (ev of snap.evidences; track ev.id) {
+                    <div class="attachment-item">
+                      <span class="material-icons file-icon">
+                        {{ ev.kind === 'FOTO' ? 'photo_camera' : 'description' }}
+                      </span>
+                      <div class="file-info">
+                        <span class="file-name">{{ ev.name }}</span>
+                        <span class="file-size">{{ ev.caption }} · {{ ev.size }} · {{ ev.capturedAt }}</span>
+                      </div>
+                    </div>
+                  }
+                </div>
+              }
             </div>
           } @else {
             <div class="detail-surface-card">
