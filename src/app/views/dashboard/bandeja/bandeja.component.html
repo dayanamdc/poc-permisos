@@ -1,0 +1,730 @@
+<div class="inbox-page">
+  @if (!selectedActa()) {
+    <div class="bandeja-header">
+      <div>
+        <div class="eyebrow">SEDAPAL · CONTROL Y APROBACIÓN</div>
+        <h1 class="page-title">Bandeja del validador</h1>
+        <p class="page-subtitle">
+          Revisa actas enviadas desde campo, verifica firmas y documentos, observa o aprueba con tu firma.
+        </p>
+      </div>
+
+      <button type="button" class="refresh-orange-btn" (click)="refreshBandeja()">
+        <span class="material-icons">refresh</span>
+        <span>Actualizar bandeja</span>
+      </button>
+    </div>
+
+    <section class="kpi-grid">
+      <button
+        type="button"
+        class="kpi-card"
+        [class.kpi-active]="documentsService.activeFilter() === 'POR_VALIDAR'"
+        (click)="setFilter('POR_VALIDAR')"
+      >
+        <span class="kpi-label">POR VALIDAR</span>
+        <span class="kpi-value">{{ documentsService.porValidarCount() }}</span>
+        <span class="kpi-sub">Pendientes de decisión</span>
+      </button>
+
+      <button
+        type="button"
+        class="kpi-card"
+        [class.kpi-active]="documentsService.activeFilter() === 'OBSERVADO'"
+        (click)="setFilter('OBSERVADO')"
+      >
+        <span class="kpi-label">OBSERVADAS</span>
+        <span class="kpi-value">{{ documentsService.observadoCount() }}</span>
+        <span class="kpi-sub">Devueltas a campo</span>
+      </button>
+
+      <button
+        type="button"
+        class="kpi-card"
+        [class.kpi-active]="documentsService.activeFilter() === 'APROBADO'"
+        (click)="setFilter('APROBADO')"
+      >
+        <span class="kpi-label">APROBADAS</span>
+        <span class="kpi-value">{{ documentsService.aprobadoCount() }}</span>
+        <span class="kpi-sub">Con 3ra firma registrada</span>
+      </button>
+
+      <button
+        type="button"
+        class="kpi-card"
+        [class.kpi-active]="documentsService.activeFilter() === 'TODAS'"
+        (click)="setFilter('TODAS')"
+      >
+        <span class="kpi-label">TOTAL EN BANDEJA</span>
+        <span class="kpi-value">{{ documentsService.actas().length }}</span>
+        <span class="kpi-sub">{{ documentsService.cerradoCount() }} cerradas definitivamente</span>
+      </button>
+    </section>
+
+    <section class="toolbar-card">
+      <div class="filter-tabs">
+        <button
+          type="button"
+          class="tab-pill"
+          [class.active]="documentsService.activeFilter() === 'POR_VALIDAR'"
+          (click)="setFilter('POR_VALIDAR')"
+        >
+          Por validar ({{ documentsService.porValidarCount() }})
+        </button>
+        <button
+          type="button"
+          class="tab-pill"
+          [class.active]="documentsService.activeFilter() === 'OBSERVADO'"
+          (click)="setFilter('OBSERVADO')"
+        >
+          Observadas ({{ documentsService.observadoCount() }})
+        </button>
+        <button
+          type="button"
+          class="tab-pill"
+          [class.active]="documentsService.activeFilter() === 'APROBADO'"
+          (click)="setFilter('APROBADO')"
+        >
+          Aprobadas ({{ documentsService.aprobadoCount() }})
+        </button>
+        <button
+          type="button"
+          class="tab-pill"
+          [class.active]="documentsService.activeFilter() === 'CERRADO'"
+          (click)="setFilter('CERRADO')"
+        >
+          Cerradas ({{ documentsService.cerradoCount() }})
+        </button>
+        <button
+          type="button"
+          class="tab-pill"
+          [class.active]="documentsService.activeFilter() === 'TODAS'"
+          (click)="setFilter('TODAS')"
+        >
+          Todas ({{ documentsService.actas().length }})
+        </button>
+      </div>
+
+      <div class="search-row">
+        <input
+          type="text"
+          [ngModel]="searchTerm()"
+          (ngModelChange)="searchTerm.set($event)"
+          placeholder="Buscar por N° Acta, versión (ej. v2), sede o registrante..."
+        />
+        <button
+          type="button"
+          class="search-outline-btn"
+          (click)="searchTerm.set(searchTerm())"
+        >
+          Buscar
+        </button>
+      </div>
+    </section>
+
+    <section class="actas-list-section">
+      @if (filteredActas().length === 0) {
+        <div class="empty-card">
+          <span class="material-icons">assignment</span>
+          <h3>No se encontraron actas</h3>
+          <p>Prueba cambiando el filtro de estado o limpiando el buscador.</p>
+        </div>
+      } @else {
+        @for (acta of filteredActas(); track acta.id) {
+          @let latest = getLatestSnapshot(acta);
+          <article class="acta-row-card" (click)="openActaDetail(acta)">
+            <div class="acta-row-main">
+              <div class="acta-row-top">
+                <span class="acta-code">{{ acta.code }}</span>
+                <span
+                  class="status-pill"
+                  [class.pill-por-validar]="acta.status === 'POR_VALIDAR'"
+                  [class.pill-observado]="acta.status === 'OBSERVADO'"
+                  [class.pill-aprobado]="acta.status === 'APROBADO'"
+                  [class.pill-cerrado]="acta.status === 'CERRADO'"
+                >
+                  {{ formatStatusLabel(acta.status) }}
+                </span>
+                <span class="version-badge">Versión {{ acta.currentVersion }}</span>
+                <span class="sig-pill">{{ getSignedCount(acta) }}/3 firmas</span>
+              </div>
+
+              <h2 class="acta-row-title">{{ latest.data.title }}</h2>
+
+              <div class="acta-row-meta">
+                <span><strong>Tipo:</strong> {{ latest.data.actaType }}</span>
+                <span>·</span>
+                <span><strong>Sede:</strong> {{ latest.data.location }}</span>
+                <span>·</span>
+                <span><strong>Registrante:</strong> {{ latest.data.registrant }}</span>
+                <span>·</span>
+                <span><strong>Actualizado:</strong> {{ acta.updatedAt }}</span>
+              </div>
+            </div>
+
+            <div class="acta-row-actions" (click)="$event.stopPropagation()">
+              <button
+                type="button"
+                class="btn-revisar-acta"
+                (click)="openActaDetail(acta)"
+              >
+                <span>Revisar acta</span>
+                <span class="material-icons">arrow_forward</span>
+              </button>
+            </div>
+          </article>
+        }
+      }
+    </section>
+  } @else {
+    @if (selectedActa(); as acta) {
+      @if (viewedSnapshot(); as snap) {
+        <div class="detail-page">
+          <div class="detail-top-nav">
+            <button type="button" class="back-btn" (click)="backToBandeja()">
+              <span class="material-icons">arrow_back</span>
+              <span>Volver a la bandeja</span>
+            </button>
+          </div>
+
+          <div class="detail-title-row">
+            <h1 class="detail-main-title">Acta {{ acta.code }}</h1>
+            <span
+              class="status-pill"
+              [class.pill-por-validar]="acta.status === 'POR_VALIDAR'"
+              [class.pill-observado]="acta.status === 'OBSERVADO'"
+              [class.pill-aprobado]="acta.status === 'APROBADO'"
+              [class.pill-cerrado]="acta.status === 'CERRADO'"
+            >
+              {{ formatStatusLabel(acta.status) }}
+            </span>
+            <span class="registro-pill">
+              Registro: {{ acta.status === 'CERRADO' ? 'Cerrado (Inmutable)' : 'Activo (' + acta.currentVersion + ')' }}
+            </span>
+          </div>
+
+          <div class="detail-meta-line">
+            <span>Tipo: <code>{{ snap.data.actaType }}</code></span>
+            <span>·</span>
+            <span>Generada: {{ snap.pdf.generatedAt }}</span>
+            <span>·</span>
+            <span>Firmas: {{ getSignedCount(acta) }}/3</span>
+          </div>
+
+          <div class="versions-bar">
+            <span class="versions-label">Versiones enviadas:</span>
+            <div class="versions-list">
+              @for (ver of acta.versions; track ver.version) {
+                <button
+                  type="button"
+                  class="version-selector-pill"
+                  [class.active]="snap.version === ver.version"
+                  (click)="selectVersion(ver.version)"
+                >
+                  Versión {{ ver.version }}
+                  @if (ver.version === acta.currentVersion) {
+                    <span>· Vigente</span>
+                  }
+                </button>
+              }
+            </div>
+          </div>
+
+          <div class="detail-subtabs">
+            <button
+              type="button"
+              class="tab-pill"
+              [class.active]="activeDetailTab() === 'PDF'"
+              (click)="activeDetailTab.set('PDF')"
+            >
+              PDF preliminar
+            </button>
+            <button
+              type="button"
+              class="tab-pill"
+              [class.active]="activeDetailTab() === 'FIRMAS'"
+              (click)="activeDetailTab.set('FIRMAS')"
+            >
+              Firmas y decisión ({{ getSignedCount(acta) }}/3)
+            </button>
+          </div>
+
+          @if (acta.status === 'CERRADO') {
+            <div class="alert-banner alert-closed">
+              <span class="material-icons">lock</span>
+              <div>
+                <strong>Acta Cerrada — Solo Lectura</strong>
+                <div class="alert-sub">
+                  Cerrada por {{ acta.closedBy }} el {{ acta.closedAt }}. Versión {{ snap.versionLabel }} y sus 3 firmas están congeladas definitivamente.
+                </div>
+              </div>
+            </div>
+          }
+
+          @if (isViewingHistorical()) {
+            <div class="alert-banner alert-historical">
+              <span class="material-icons">history_edu</span>
+              <div>
+                <strong>Consultando versión histórica {{ snap.versionLabel }} (Solo lectura)</strong>
+                <div class="alert-sub">
+                  La versión vigente es v{{ acta.currentVersion }}. Selecciona Versión {{ acta.currentVersion }} arriba para ejecutar acciones.
+                </div>
+              </div>
+            </div>
+          }
+
+          @if (snap.observationReason && (acta.status === 'OBSERVADO' || isViewingHistorical())) {
+            <div class="alert-banner alert-observed">
+              <span class="material-icons">report_problem</span>
+              <div>
+                <strong>Motivo de Observación ({{ snap.versionLabel }})</strong>
+                <div class="alert-sub">{{ snap.observationReason }}</div>
+              </div>
+            </div>
+          }
+
+          @if (activeDetailTab() === 'PDF') {
+            <div class="detail-surface-card">
+              <div class="pdf-viewer-shell">
+                <div class="pdf-toolbar">
+                  <div class="pdf-file-info">
+                    <span class="material-icons pdf-icon">picture_as_pdf</span>
+                    <span>{{ snap.pdf.fileName }}</span>
+                  </div>
+                  <span class="pdf-meta">{{ snap.pdf.pages }} págs. · {{ snap.pdf.checksum }}</span>
+                </div>
+
+                <div class="pdf-page-sheet">
+                  <div class="pdf-sheet-header">
+                    <div>
+                      <div class="pdf-org">SISTEMA DE VALIDACIÓN DE ACTAS DE CAMPO</div>
+                      <div class="pdf-doc-title">{{ snap.data.title }}</div>
+                    </div>
+                    <div class="pdf-stamp">
+                      <span>{{ acta.code }}</span>
+                      <strong>{{ snap.versionLabel }}</strong>
+                    </div>
+                  </div>
+
+                  <div class="pdf-grid-info">
+                    <div><strong>Tipo:</strong> {{ snap.data.actaType }}</div>
+                    <div><strong>Sector:</strong> {{ snap.data.sector }}</div>
+                    <div><strong>Ubicación:</strong> {{ snap.data.location }}</div>
+                    <div><strong>Cuadrilla:</strong> {{ snap.data.fieldTeam }}</div>
+                    <div><strong>Registrante:</strong> {{ snap.data.registrant }}</div>
+                    <div><strong>Generado:</strong> {{ snap.pdf.generatedAt }}</div>
+                  </div>
+
+                  <div class="pdf-block">
+                    <div class="pdf-block-title">1. DESCRIPCIÓN DE ACTIVIDADES EN CAMPO</div>
+                    <p>{{ snap.data.description }}</p>
+                    <p class="pdf-notes"><strong>Notas de campo:</strong> {{ snap.data.fieldNotes }}</p>
+                  </div>
+
+                  <div class="pdf-block">
+                    <div class="pdf-block-title">2. CONTROLES VERIFICADOS</div>
+                    <ul>
+                      @for (item of snap.data.checklist; track item) {
+                        <li>{{ item }}</li>
+                      }
+                    </ul>
+                  </div>
+
+                  <div class="pdf-signatures-footer">
+                    <div class="pdf-sig-cell">
+                      <div class="pdf-sig-graphic">
+                        <span class="sig-script">{{ snap.signatures.campo1.signerName }}</span>
+                      </div>
+                      <div class="pdf-sig-line">
+                        {{ snap.signatures.campo1.status === 'FIRMADO' ? snap.signatures.campo1.signerName : '---' }}
+                      </div>
+                      <span>Firma 1 · Registrante</span>
+                      <small>{{ snap.signatures.campo1.signedAt || 'Pendiente' }}</small>
+                    </div>
+
+                    <div class="pdf-sig-cell">
+                      <div class="pdf-sig-graphic">
+                        <span class="sig-script">{{ snap.signatures.campo2.signerName }}</span>
+                      </div>
+                      <div class="pdf-sig-line">
+                        {{ snap.signatures.campo2.status === 'FIRMADO' ? snap.signatures.campo2.signerName : '---' }}
+                      </div>
+                      <span>Firma 2 · Supervisor Campo</span>
+                      <small>{{ snap.signatures.campo2.signedAt || 'Pendiente' }}</small>
+                    </div>
+
+                    <div class="pdf-sig-cell">
+                      <div class="pdf-sig-graphic">
+                        @if (snap.signatures.validador.signatureImage) {
+                          <img
+                            [src]="snap.signatures.validador.signatureImage"
+                            alt="Firma del validador"
+                            class="drawn-signature-img"
+                          />
+                        } @else if (snap.signatures.validador.status === 'FIRMADO') {
+                          <span class="sig-script val">{{ snap.signatures.validador.signerName }}</span>
+                        } @else {
+                          <span class="sig-placeholder">Sin firma registrada</span>
+                        }
+                      </div>
+                      <div class="pdf-sig-line val">
+                        {{ snap.signatures.validador.status === 'FIRMADO' ? snap.signatures.validador.signerName : 'PENDIENTE' }}
+                      </div>
+                      <span>3ra Firma · Validador</span>
+                      <small>{{ snap.signatures.validador.signedAt || 'Requiere firma' }}</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          } @else {
+            <div class="detail-surface-card">
+              <div class="signatures-grid">
+                <div
+                  class="signature-box"
+                  [class.sig-ok]="snap.signatures.campo1.status === 'FIRMADO'"
+                  [class.sig-pending]="snap.signatures.campo1.status === 'PENDIENTE'"
+                >
+                  <div class="sig-box-head">
+                    <span class="material-icons">
+                      {{ snap.signatures.campo1.status === 'FIRMADO' ? 'check_circle' : 'schedule' }}
+                    </span>
+                    <span class="sig-role">{{ snap.signatures.campo1.label }}</span>
+                  </div>
+                  <div class="sig-name">{{ snap.signatures.campo1.signerName }}</div>
+                  <div class="sig-time">{{ snap.signatures.campo1.signedAt || 'Pendiente' }}</div>
+                </div>
+
+                <div
+                  class="signature-box"
+                  [class.sig-ok]="snap.signatures.campo2.status === 'FIRMADO'"
+                  [class.sig-pending]="snap.signatures.campo2.status === 'PENDIENTE'"
+                >
+                  <div class="sig-box-head">
+                    <span class="material-icons">
+                      {{ snap.signatures.campo2.status === 'FIRMADO' ? 'check_circle' : 'schedule' }}
+                    </span>
+                    <span class="sig-role">{{ snap.signatures.campo2.label }}</span>
+                  </div>
+                  <div class="sig-name">{{ snap.signatures.campo2.signerName }}</div>
+                  <div class="sig-time">{{ snap.signatures.campo2.signedAt || 'Pendiente' }}</div>
+                </div>
+
+                <div
+                  class="signature-box"
+                  [class.sig-ok]="snap.signatures.validador.status === 'FIRMADO'"
+                  [class.sig-pending]="snap.signatures.validador.status === 'PENDIENTE'"
+                >
+                  <div class="sig-box-head">
+                    <span class="material-icons">
+                      {{ snap.signatures.validador.status === 'FIRMADO' ? 'verified' : 'pending' }}
+                    </span>
+                    <span class="sig-role">{{ snap.signatures.validador.label }}</span>
+                  </div>
+                  <div class="sig-name">{{ snap.signatures.validador.signerName }}</div>
+                  <div class="sig-time">{{ snap.signatures.validador.signedAt || 'Pendiente' }}</div>
+                </div>
+              </div>
+
+              @if (snap.remediationNote) {
+                <div class="remediation-note-box">
+                  <strong>Nota de subsanación ({{ snap.versionLabel }}):</strong>
+                  <span>{{ snap.remediationNote }}</span>
+                </div>
+              }
+            </div>
+          }
+
+          @if (!isViewingHistorical() && acta.status !== 'CERRADO') {
+            <div class="detail-surface-card action-panel">
+              @if (acta.status === 'POR_VALIDAR') {
+                <div class="modal-observation-box no-border">
+                  <label for="detailObsInput">
+                    Observación (obligatoria si devuelve el acta) / Comentario de aprobación
+                  </label>
+                  <textarea
+                    id="detailObsInput"
+                    rows="2"
+                    [ngModel]="observationInput()"
+                    (ngModelChange)="observationInput.set($event); observationError.set('')"
+                    placeholder="Escribe aquí el motivo si encuentras observaciones..."
+                  ></textarea>
+                  @if (observationError()) {
+                    <div class="error-msg">{{ observationError() }}</div>
+                  }
+                </div>
+              }
+
+              @if (acta.status === 'APROBADO') {
+                <div class="decision-box no-border">
+                  <div class="decision-title">
+                    <span class="material-icons">verified_user</span>
+                    <span>Control de Cierre del Acta</span>
+                  </div>
+                  <ul class="control-checklist">
+                    <li [class.check-pass]="!acta.hasOpenObservation" [class.check-fail]="acta.hasOpenObservation">
+                      <span class="material-icons">{{ !acta.hasOpenObservation ? 'check_circle' : 'cancel' }}</span>
+                      <span>Sin observaciones abiertas</span>
+                    </li>
+                    <li [class.check-pass]="snap.signatures.campo1.status === 'FIRMADO'" [class.check-fail]="snap.signatures.campo1.status !== 'FIRMADO'">
+                      <span class="material-icons">{{ snap.signatures.campo1.status === 'FIRMADO' ? 'check_circle' : 'cancel' }}</span>
+                      <span>Firma 1 de campo registrada</span>
+                    </li>
+                    <li [class.check-pass]="snap.signatures.campo2.status === 'FIRMADO'" [class.check-fail]="snap.signatures.campo2.status !== 'FIRMADO'">
+                      <span class="material-icons">{{ snap.signatures.campo2.status === 'FIRMADO' ? 'check_circle' : 'cancel' }}</span>
+                      <span>Firma 2 de campo registrada</span>
+                    </li>
+                    <li [class.check-pass]="snap.signatures.validador.status === 'FIRMADO'" [class.check-fail]="snap.signatures.validador.status !== 'FIRMADO'">
+                      <span class="material-icons">{{ snap.signatures.validador.status === 'FIRMADO' ? 'check_circle' : 'cancel' }}</span>
+                      <span>3ra firma del validador registrada</span>
+                    </li>
+                  </ul>
+                  @if (!closeControlCheck().allowed) {
+                    <div class="error-msg">Cierre bloqueado: {{ closeControlCheck().reasons[0] }}</div>
+                  }
+                </div>
+              }
+
+              <div class="detail-actions-bar">
+                <button type="button" class="btn-ghost-close" (click)="backToBandeja()">
+                  <span class="material-icons">arrow_back</span>
+                  <span>Volver a la bandeja</span>
+                </button>
+
+                <div class="footer-right">
+                  @if (acta.status === 'POR_VALIDAR') {
+                    <button type="button" class="btn-observe" (click)="onRegisterObservation()">
+                      <span class="material-icons">assignment_return</span>
+                      <span>Registrar observación y devolver</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      class="btn-sign"
+                      [class.is-signed]="isValidatorSigned(acta)"
+                      (click)="openSignatureModal(acta)"
+                    >
+                      <span class="material-icons">draw</span>
+                      <span>{{ isValidatorSigned(acta) ? 'Volver a firmar' : 'Firmar' }}</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      class="btn-approve"
+                      [disabled]="!canApproveActa(acta)"
+                      (click)="onApproveActa(acta, observationInput())"
+                      [title]="canApproveActa(acta) ? 'Aprobar acta' : 'Primero registra tu firma'"
+                    >
+                      <span class="material-icons">check_circle</span>
+                      <span>Aprobar</span>
+                    </button>
+                  }
+
+                  @if (acta.status === 'OBSERVADO') {
+                    <button type="button" class="Primary-Button" (click)="openRemediationModal(acta)">
+                      <span class="material-icons">edit_document</span>
+                      <span>Subsanar acta observada</span>
+                    </button>
+                  }
+
+                  @if (acta.status === 'APROBADO') {
+                    <button
+                      type="button"
+                      class="btn-close-acta"
+                      [disabled]="!closeControlCheck().allowed"
+                      (click)="onCloseActa(acta)"
+                    >
+                      <span class="material-icons">lock</span>
+                      <span>Cerrar acta definitivamente</span>
+                    </button>
+                  }
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    }
+  }
+</div>
+
+@if (signatureModalOpen() && signatureTargetActa(); as sigActa) {
+  <div class="modal-backdrop high-z" (click)="closeSignatureModal()">
+    <div class="signature-modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div>
+          <span class="doc-code">{{ sigActa.code }} · v{{ sigActa.currentVersion }}</span>
+          <h3>Registrar 3ra Firma del Validador</h3>
+        </div>
+        <button type="button" class="close-detail-btn" (click)="closeSignatureModal()">
+          <span class="material-icons">close</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <p class="sig-instructions">
+          Dibuja tu firma a mano alzada en el recuadro inferior (con mouse o pantalla táctil). Al guardar, se incrustará en el bloque de firmas del PDF del acta.
+        </p>
+
+        <div class="canvas-wrapper">
+          <canvas
+            #signatureCanvas
+            width="520"
+            height="200"
+            class="signature-canvas"
+            (pointerdown)="startDrawing($event)"
+            (pointermove)="draw($event)"
+            (pointerup)="stopDrawing($event)"
+            (pointercancel)="stopDrawing($event)"
+          ></canvas>
+          @if (!hasDrawnSignature()) {
+            <span class="canvas-placeholder">Dibuja tu firma aquí</span>
+          }
+        </div>
+
+        <div class="signer-preview-meta">
+          <span><strong>Firmante:</strong> {{ authService.currentUser()?.fullName }}</span>
+          <span><strong>Rol:</strong> {{ authService.currentUser()?.role }}</span>
+        </div>
+
+        @if (signatureError()) {
+          <div class="error-msg">{{ signatureError() }}</div>
+        }
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" (click)="clearCanvas()">
+          <span class="material-icons">cleaning_services</span>
+          <span>Limpiar trazo</span>
+        </button>
+        <button type="button" class="Primary-Button" (click)="saveSignature()">
+          <span class="material-icons">save</span>
+          <span>Guardar firma</span>
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+@if (remediationModalOpen() && selectedActa(); as acta) {
+  <div class="modal-backdrop high-z" (click)="closeRemediationModal()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div>
+          <span class="doc-code">{{ acta.code }} · v{{ acta.currentVersion }} → v{{ acta.currentVersion + 1 }}</span>
+          <h3>Subsanar Acta Observada</h3>
+        </div>
+        <button type="button" class="close-detail-btn" (click)="closeRemediationModal()">
+          <span class="material-icons">close</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        @if (getLatestSnapshot(acta).observationReason; as obs) {
+          <div class="alert-banner alert-observed">
+            <span class="material-icons">report_problem</span>
+            <div>
+              <strong>Observación a subsanar:</strong>
+              <div class="alert-sub">{{ obs }}</div>
+            </div>
+          </div>
+        }
+
+        <div class="modal-field">
+          <label for="remTitle">Título del Acta</label>
+          <input
+            id="remTitle"
+            type="text"
+            [ngModel]="remTitle()"
+            (ngModelChange)="remTitle.set($event)"
+          />
+        </div>
+
+        <div class="modal-field">
+          <label for="remLocation">Ubicación / Sede</label>
+          <input
+            id="remLocation"
+            type="text"
+            [ngModel]="remLocation()"
+            (ngModelChange)="remLocation.set($event)"
+          />
+        </div>
+
+        <div class="modal-field">
+          <label for="remDesc">Descripción actualizada</label>
+          <textarea
+            id="remDesc"
+            rows="2"
+            [ngModel]="remDescription()"
+            (ngModelChange)="remDescription.set($event)"
+          ></textarea>
+        </div>
+
+        <div class="modal-field">
+          <label for="remNotes">Notas de campo actualizadas</label>
+          <textarea
+            id="remNotes"
+            rows="2"
+            [ngModel]="remFieldNotes()"
+            (ngModelChange)="remFieldNotes.set($event)"
+          ></textarea>
+        </div>
+
+        <div class="modal-field">
+          <label for="remEvidence">Nueva evidencia adjunta (simulada)</label>
+          <input
+            id="remEvidence"
+            type="text"
+            [ngModel]="remNewEvidence()"
+            (ngModelChange)="remNewEvidence.set($event)"
+          />
+        </div>
+
+        <div class="modal-field">
+          <label for="remNote">Detalle de subsanación realizada *</label>
+          <textarea
+            id="remNote"
+            rows="2"
+            [ngModel]="remNote()"
+            (ngModelChange)="remNote.set($event); remError.set('')"
+            placeholder="Describe qué se corrigió para levantar la observación..."
+          ></textarea>
+        </div>
+
+        <div class="modal-signatures-box">
+          <span class="modal-sig-title">Conformidad y renovación de firmas de campo (v{{ acta.currentVersion + 1 }}):</span>
+          <label class="checkbox-row">
+            <input
+              type="checkbox"
+              [ngModel]="remSignCampo1()"
+              (ngModelChange)="remSignCampo1.set($event)"
+            />
+            <span>Registrar Firma 1 de campo (Técnico / Registrante)</span>
+          </label>
+          <label class="checkbox-row">
+            <input
+              type="checkbox"
+              [ngModel]="remSignCampo2()"
+              (ngModelChange)="remSignCampo2.set($event)"
+            />
+            <span>Registrar Firma 2 de campo (Supervisor / Cliente en campo)</span>
+          </label>
+        </div>
+
+        @if (remError()) {
+          <div class="error-msg">{{ remError() }}</div>
+        }
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" (click)="closeRemediationModal()">
+          Cancelar
+        </button>
+        <button type="button" class="Primary-Button" (click)="submitRemediation()">
+          <span class="material-icons">publish</span>
+          <span>Generar v{{ acta.currentVersion + 1 }} y enviar a Por validar</span>
+        </button>
+      </div>
+    </div>
+  </div>
+}

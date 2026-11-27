@@ -1,9 +1,12 @@
 import { Injectable, computed, signal } from '@angular/core';
 import {
   ActaRecord,
+  ActaStatus,
   ActaVersionSnapshot,
   RemediationPayload,
 } from '../models/document.model';
+
+export type ActaFilterTab = 'TODAS' | ActaStatus;
 
 const INITIAL_ACTAS: ActaRecord[] = [
   {
@@ -848,6 +851,13 @@ export class DocumentsService {
 
   readonly actas = this.actasSignal.asReadonly();
   readonly toast = this.toastSignal.asReadonly();
+  readonly activeFilter = signal<ActaFilterTab>('POR_VALIDAR');
+  readonly selectedActaId = signal<string | null>(null);
+
+  setFilterAndShowList(filter: ActaFilterTab): void {
+    this.activeFilter.set(filter);
+    this.selectedActaId.set(null);
+  }
 
   readonly porValidarCount = computed(
     () => this.actasSignal().filter((a) => a.status === 'POR_VALIDAR').length

@@ -1,0 +1,41 @@
+<div class="app-shell">
+  @if (mobileMenuOpen()) {
+    <div class="sidebar-backdrop" (click)="closeMobileMenu()"></div>
+  }
+
+  <app-sidebar
+    [mobileOpen]="mobileMenuOpen()"
+    (closeMobile)="closeMobileMenu()"
+  ></app-sidebar>
+
+  <div class="main-wrapper">
+    <app-topnav (sidebarToggled)="toggleMobileMenu()"></app-topnav>
+
+    <main class="main-content">
+      <ng-content></ng-content>
+    </main>
+  </div>
+
+  @if (documentsService.toast(); as toast) {
+    <div
+      class="toast-banner"
+      [class.toast-success]="toast.type === 'success'"
+      [class.toast-error]="toast.type === 'error'"
+      [class.toast-warning]="toast.type === 'warning'"
+    >
+      <span class="material-icons">
+        {{
+          toast.type === 'success'
+            ? 'check_circle'
+            : toast.type === 'warning'
+              ? 'warning'
+              : 'cancel'
+        }}
+      </span>
+      <span>{{ toast.message }}</span>
+      <button type="button" class="toast-close" (click)="documentsService.clearToast()">
+        <span class="material-icons">close</span>
+      </button>
+    </div>
+  }
+</div>

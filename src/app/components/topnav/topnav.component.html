@@ -1,0 +1,47 @@
+<header class="topnav">
+  <div class="topnav-left">
+    <button
+      type="button"
+      class="mobile-menu-btn"
+      (click)="toggleSidebar()"
+      aria-label="Abrir menú"
+    >
+      <span class="material-icons">menu</span>
+    </button>
+
+    <img
+      src="images/logotipo-sgs-rgb.svg"
+      alt="SGS"
+      class="sgs-logo-img"
+    />
+
+    <span class="header-v-sep"></span>
+
+    <div class="header-titles">
+      <span class="head-title">Validación de Actas</span>
+      <span class="head-subtitle">{{ headerSubtitle() }}</span>
+    </div>
+  </div>
+
+  <div class="topnav-right">
+    <span class="env-pill">Prueba</span>
+
+    @if (authService.currentUser(); as user) {
+      <div class="user-info" [title]="user.fullName + ' - ' + user.role">
+        <div class="user-avatar-circle">{{ userInitial() }}</div>
+        <div class="user-text">
+          <span class="header-username">{{ user.fullName }}</span>
+          <span class="user-role">VALIDADOR</span>
+        </div>
+      </div>
+    }
+
+    <button
+      type="button"
+      class="logout-outline-btn"
+      (click)="logout()"
+    >
+      Cerrar sesión
+    </button>
+  </div>
+</header>

@@ -1,8 +1,8 @@
 import { Routes } from '@angular/router';
-import { authGuard } from './guards/auth.guard';
-import { LoginComponent } from './pages/login/login.component';
-import { LayoutComponent } from './components/layout/layout.component';
-import { InboxComponent } from './pages/inbox/inbox.component';
+import { authGuard } from './auth/auth.guard';
+import { LoginComponent } from './auth/login/login.component';
+import { DashboardComponent } from './views/dashboard/dashboard.component';
+import { BandejaComponent } from './views/dashboard/bandeja/bandeja.component';
 
 export const routes: Routes = [
   {
@@ -11,12 +11,12 @@ export const routes: Routes = [
   },
   {
     path: '',
-    component: LayoutComponent,
+    component: DashboardComponent,
     canActivate: [authGuard],
     children: [
       {
         path: 'bandeja',
-        component: InboxComponent,
+        component: BandejaComponent,
       },
       {
         path: '',

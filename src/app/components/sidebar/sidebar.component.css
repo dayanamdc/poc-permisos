@@ -1,0 +1,124 @@
+#sidebar {
+  width: 248px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  background-color: #fcf5ef;
+  border-right: 1px solid #ede2d8;
+  z-index: 1001;
+  display: flex;
+  flex-direction: column;
+  padding: 16px 14px;
+  transition: left 0.2s ease;
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 4px 14px;
+}
+
+.brand-square {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background-color: #c94100;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.2;
+}
+
+.brand-sub {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #64748b;
+  letter-spacing: 0.4px;
+  margin-top: 2px;
+}
+
+.sidebar-divider {
+  height: 1px;
+  background-color: #eadfd5;
+  margin: 4px 0 18px;
+}
+
+.sidebar-section-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  color: #475569;
+  padding: 0 8px 10px;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 12px;
+  border-radius: 10px;
+  border: none;
+  background: transparent;
+  color: #334155;
+  font-family: 'Roboto', sans-serif;
+  font-size: 13.5px;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.sidebar-item:hover {
+  background-color: #f3e8de;
+  color: #0f172a;
+}
+
+.sidebar-item.active {
+  background-color: #c94100;
+  color: #ffffff;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(201, 65, 0, 0.25);
+}
+
+.sidenav-icon {
+  font-size: 19px;
+  color: #64748b;
+}
+
+.sidebar-item.active .sidenav-icon {
+  color: #ffffff;
+}
+
+@media screen and (max-width: 992px) {
+  #sidebar {
+    left: -260px;
+  }
+
+  #sidebar.mobile-open {
+    left: 0;
+  }
+}

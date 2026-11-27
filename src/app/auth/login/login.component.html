@@ -1,0 +1,41 @@
+<div class="login-page">
+  <div class="login-center">
+    <img
+      src="images/logotipo-sgs-rgb.svg"
+      alt="SGS"
+      class="login-sgs-logo"
+    />
+
+    <div class="login-eyebrow">SEDAPAL · ACTAS DE CAMPO</div>
+
+    <h1 class="login-title">Inicia sesión para continuar</h1>
+
+    <p class="login-subtitle">
+      Usa tu cuenta corporativa de Microsoft para acceder a las actas.
+    </p>
+
+    <button
+      type="button"
+      class="btn-microsoft"
+      (click)="loginCorporate()"
+    >
+      Continuar con Microsoft
+    </button>
+
+    <div class="login-divider"></div>
+
+    <span class="dev-label">Acceso temporal para pruebas</span>
+
+    <button
+      type="button"
+      class="btn-dev-mode"
+      (click)="loginDevMode()"
+    >
+      Entrar en modo desarrollo
+    </button>
+
+    <p class="dev-footnote">
+      No valida la identidad. Se muestra como usuario de desarrollo.
+    </p>
+  </div>
+</div>

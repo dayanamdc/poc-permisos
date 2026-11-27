@@ -1,0 +1,65 @@
+<aside id="sidebar" [class.mobile-open]="mobileOpen">
+  <div class="sidebar-brand">
+    <div class="brand-square">V</div>
+    <div class="brand-text">
+      <span class="brand-title">Portal Validador</span>
+      <span class="brand-sub">SEDAPAL · ACTAS VMA</span>
+    </div>
+  </div>
+
+  <div class="sidebar-divider"></div>
+
+  <div class="sidebar-section-label">GESTIÓN DE VALIDACIÓN</div>
+
+  <nav class="sidebar-nav">
+    <button
+      type="button"
+      class="sidebar-item"
+      [class.active]="documentsService.activeFilter() === 'POR_VALIDAR' && !documentsService.selectedActaId()"
+      (click)="selectSidebarFilter('POR_VALIDAR')"
+    >
+      <span class="material-icons sidenav-icon">inventory_2</span>
+      <span>Por validar ({{ documentsService.porValidarCount() }})</span>
+    </button>
+
+    <button
+      type="button"
+      class="sidebar-item"
+      [class.active]="documentsService.activeFilter() === 'OBSERVADO' && !documentsService.selectedActaId()"
+      (click)="selectSidebarFilter('OBSERVADO')"
+    >
+      <span class="material-icons sidenav-icon">flag</span>
+      <span>Observadas ({{ documentsService.observadoCount() }})</span>
+    </button>
+
+    <button
+      type="button"
+      class="sidebar-item"
+      [class.active]="documentsService.activeFilter() === 'APROBADO' && !documentsService.selectedActaId()"
+      (click)="selectSidebarFilter('APROBADO')"
+    >
+      <span class="material-icons sidenav-icon">check</span>
+      <span>Aprobadas ({{ documentsService.aprobadoCount() }})</span>
+    </button>
+
+    <button
+      type="button"
+      class="sidebar-item"
+      [class.active]="documentsService.activeFilter() === 'CERRADO' && !documentsService.selectedActaId()"
+      (click)="selectSidebarFilter('CERRADO')"
+    >
+      <span class="material-icons sidenav-icon">lock</span>
+      <span>Cerradas ({{ documentsService.cerradoCount() }})</span>
+    </button>
+
+    <button
+      type="button"
+      class="sidebar-item"
+      [class.active]="documentsService.activeFilter() === 'TODAS' && !documentsService.selectedActaId()"
+      (click)="selectSidebarFilter('TODAS')"
+    >
+      <span class="material-icons sidenav-icon">view_headline</span>
+      <span>Todas las actas ({{ documentsService.actas().length }})</span>
+    </button>
+  </nav>
+</aside>

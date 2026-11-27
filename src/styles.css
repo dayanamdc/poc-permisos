@@ -34,8 +34,6 @@ body {
   background-color: var(--pale-grey);
   -webkit-font-smoothing: antialiased;
 }
-
-/* Split white/orange background from reference template */
 .main-container-full {
   display: flex;
   align-items: center;
@@ -128,9 +126,6 @@ body {
 .nav-spacer {
   flex: 1 1 auto;
 }
-
-/* --- Actas Modals & PDF Viewer --- */
-/* Modal Backdrops */
 .modal-backdrop {
   position: fixed;
   inset: 0;
@@ -145,8 +140,6 @@ body {
 .modal-backdrop.high-z {
   z-index: 2600;
 }
-
-/* Wide PDF Review Modal */
 .pdf-modal-card {
   width: 100%;
   max-width: 980px;
@@ -309,8 +302,6 @@ body {
   gap: 10px;
   flex-wrap: wrap;
 }
-
-/* Alert Banners */
 .alert-banner {
   display: flex;
   align-items: flex-start;
@@ -343,8 +334,6 @@ body {
   border: 1px solid #f7b3b6;
   color: #8f1116;
 }
-
-/* Simulated PDF Viewer */
 .pdf-viewer-shell {
   border: 1px solid #d6d6d6;
   border-radius: 6px;
@@ -528,8 +517,6 @@ body {
   font-size: 10px;
   color: var(--brown-grey-2);
 }
-
-/* Datos & Evidencias */
 .datos-tab-content {
   display: flex;
   flex-direction: column;
@@ -635,8 +622,6 @@ body {
   font-size: 11px;
   color: var(--brown-grey-2);
 }
-
-/* Modal Observation Box */
 .modal-observation-box {
   display: flex;
   flex-direction: column;
@@ -671,8 +656,6 @@ body {
   color: var(--cherry-red);
   font-weight: 500;
 }
-
-/* Footer Action Buttons */
 .btn-approve,
 .btn-observe,
 .btn-sign,
@@ -713,8 +696,6 @@ body {
   opacity: 0.45;
   cursor: not-allowed;
 }
-
-/* Control de Cierre */
 .decision-box {
   border-top: 1px solid #e6e6e6;
   padding-top: 12px;
@@ -767,8 +748,6 @@ body {
 .check-fail {
   color: var(--cherry-red);
 }
-
-/* Signature Canvas Modal */
 .signature-modal-card {
   width: 100%;
   max-width: 580px;
@@ -822,8 +801,6 @@ body {
   padding: 8px 12px;
   border-radius: 4px;
 }
-
-/* Remediation Modal */
 .modal-card {
   width: 100%;
   max-width: 600px;
@@ -952,8 +929,6 @@ body {
     flex: 1 1 100%;
   }
 }
-
-/* Fix scroll en visor PDF del modal */
 .pdf-modal-body {
   flex: 1 1 auto;
   min-height: 0;
@@ -968,8 +943,6 @@ body {
   overflow: visible;
   flex-shrink: 0;
 }
-
-/* Refined PDF Modal Subbar & Footer Buttons */
 .pdf-modal-subbar {
   padding: 10px 20px;
 }
@@ -1138,8 +1111,6 @@ body {
 .btn-close-acta .material-icons {
   font-size: 18px;
 }
-
-/* PWA Mobile & Touch Optimizations */
 .modal-backdrop.high-z {
   overscroll-behavior: none;
 }

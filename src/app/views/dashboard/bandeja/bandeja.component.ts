@@ -7,48 +7,42 @@ import {
   signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { AuthService } from '../../services/auth.service';
-import { DocumentsService } from '../../services/documents.service';
+import { AuthService } from '../../../auth/auth.service';
+import { ActaFilterTab, DocumentsService } from '../../../services/documents.service';
 import {
   ActaRecord,
   ActaStatus,
   ActaVersionSnapshot,
-} from '../../models/document.model';
+} from '../../../models/document.model';
 
-type FilterTab = 'TODAS' | ActaStatus;
+type DetailTab = 'PDF' | 'FIRMAS';
 
 @Component({
-  selector: 'app-inbox',
+  selector: 'app-bandeja',
   standalone: true,
   imports: [FormsModule],
-  templateUrl: './inbox.component.html',
-  styleUrl: './inbox.component.css',
+  templateUrl: './bandeja.component.html',
+  styleUrl: './bandeja.component.css',
 })
-export class InboxComponent {
+export class BandejaComponent {
   readonly authService = inject(AuthService);
   readonly documentsService = inject(DocumentsService);
 
   @ViewChild('signatureCanvas') signatureCanvas?: ElementRef<HTMLCanvasElement>;
 
   searchTerm = signal('');
-  activeFilter = signal<FilterTab>('POR_VALIDAR');
-
-  // Modal Revisar PDF
-  pdfModalOpen = signal(false);
-  selectedActaId = signal<string | null>(null);
   selectedVersionNumber = signal<number | null>(null);
+  activeDetailTab = signal<DetailTab>('PDF');
 
   observationInput = signal('');
   observationError = signal('');
 
-  // Modal Firmar (Canvas)
   signatureModalOpen = signal(false);
   signatureTargetActaId = signal<string | null>(null);
   isDrawing = signal(false);
   hasDrawnSignature = signal(false);
   signatureError = signal('');
 
-  // Modal Subsanar
   remediationModalOpen = signal(false);
   remTitle = signal('');
   remLocation = signal('');
@@ -61,7 +55,7 @@ export class InboxComponent {
   remError = signal('');
 
   readonly filteredActas = computed(() => {
-    const filter = this.activeFilter();
+    const filter = this.documentsService.activeFilter();
     const query = this.searchTerm().trim().toLowerCase();
 
     return this.documentsService.actas().filter((acta) => {
@@ -87,7 +81,7 @@ export class InboxComponent {
   });
 
   readonly selectedActa = computed<ActaRecord | null>(() => {
-    const id = this.selectedActaId();
+    const id = this.documentsService.selectedActaId();
     if (!id) return null;
     return this.documentsService.actas().find((a) => a.id === id) ?? null;
   });
@@ -124,20 +118,25 @@ export class InboxComponent {
     return this.documentsService.actas().find((a) => a.id === id) ?? null;
   });
 
-  setFilter(filter: FilterTab): void {
-    this.activeFilter.set(filter);
+  setFilter(filter: ActaFilterTab): void {
+    this.documentsService.activeFilter.set(filter);
   }
 
-  openPdfModal(acta: ActaRecord): void {
-    this.selectedActaId.set(acta.id);
+  refreshBandeja(): void {
+    this.searchTerm.set('');
+  }
+
+  openActaDetail(acta: ActaRecord): void {
+    this.documentsService.selectedActaId.set(acta.id);
     this.selectedVersionNumber.set(acta.currentVersion);
+    this.activeDetailTab.set('PDF');
     this.observationInput.set('');
     this.observationError.set('');
-    this.pdfModalOpen.set(true);
   }
 
-  closePdfModal(): void {
-    this.pdfModalOpen.set(false);
+  backToBandeja(): void {
+    this.documentsService.selectedActaId.set(null);
+    this.selectedVersionNumber.set(null);
     this.observationInput.set('');
     this.observationError.set('');
   }
@@ -180,7 +179,6 @@ export class InboxComponent {
     }
   }
 
-  // --- Pad de Firma (Canvas) ---
   openSignatureModal(acta: ActaRecord): void {
     if (acta.status !== 'POR_VALIDAR') return;
     this.signatureTargetActaId.set(acta.id);
@@ -299,7 +297,6 @@ export class InboxComponent {
     };
   }
 
-  // --- Aprobar (requiere 3/3 firmas) ---
   onApproveActa(acta: ActaRecord, comment?: string): void {
     if (!this.canApproveActa(acta)) return;
     const validator = this.authService.currentUser()?.fullName || 'Validador';
@@ -307,7 +304,6 @@ export class InboxComponent {
     this.observationInput.set('');
   }
 
-  // --- Camino NO: Registrar observación y devolver ---
   onRegisterObservation(): void {
     const acta = this.selectedActa();
     if (!acta || acta.status !== 'POR_VALIDAR' || this.isViewingHistorical()) return;
@@ -326,10 +322,9 @@ export class InboxComponent {
     this.observationInput.set('');
   }
 
-  // --- Modal Subsanación ---
   openRemediationModal(acta: ActaRecord): void {
     if (acta.status !== 'OBSERVADO') return;
-    this.selectedActaId.set(acta.id);
+    this.documentsService.selectedActaId.set(acta.id);
     const latest = this.documentsService.getLatestSnapshot(acta);
     this.remTitle.set(latest.data.title);
     this.remLocation.set(latest.data.location);
@@ -377,11 +372,10 @@ export class InboxComponent {
     this.remediationModalOpen.set(false);
     if (newVersion !== null) {
       this.selectedVersionNumber.set(newVersion);
-      this.activeFilter.set('POR_VALIDAR');
+      this.documentsService.activeFilter.set('POR_VALIDAR');
     }
   }
 
-  // --- Cierre de acta ---
   onCloseActa(acta: ActaRecord): void {
     if (!this.documentsService.canCloseActa(acta).allowed) return;
     const user = this.authService.currentUser()?.fullName || 'Validador';
